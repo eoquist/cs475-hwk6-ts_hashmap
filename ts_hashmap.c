@@ -6,14 +6,21 @@
 #include "ts_hashmap.h"
 
 /**
- * Creates a new thread-safe hashmap. 
+ * Creates a new thread-safe hashmap.
  *
  * @param capacity initial capacity of the hashmap.
  * @return a pointer to a new thread-safe hashmap.
  */
-ts_hashmap_t *initmap(int capacity) {
-  // TODO
-  return NULL;
+ts_hashmap_t *initmap(int capacity)
+{
+  ts_hashmap_t *hashmap = malloc(sizeof(ts_hashmap_t));
+
+  // Note to self: -> notation is needed because hashmap is a ts_hashmap_t pointer
+  hashmap->table = malloc(capacity * sizeof(ts_entry_t *));
+  hashmap->capacity = capacity;
+  hashmap->size = 0;
+
+  return hashmap;
 }
 
 /**
@@ -22,7 +29,8 @@ ts_hashmap_t *initmap(int capacity) {
  * @param key a key to search
  * @return the value associated with the given key, or INT_MAX if key not found
  */
-int get(ts_hashmap_t *map, int key) {
+int get(ts_hashmap_t *map, int key)
+{
   // TODO
   return INT_MAX;
 }
@@ -34,7 +42,8 @@ int get(ts_hashmap_t *map, int key) {
  * @param value a value
  * @return old associated value, or INT_MAX if the key was new
  */
-int put(ts_hashmap_t *map, int key, int value) {
+int put(ts_hashmap_t *map, int key, int value)
+{
   // TODO
   return INT_MAX;
 }
@@ -45,27 +54,31 @@ int put(ts_hashmap_t *map, int key, int value) {
  * @param key a key to search
  * @return the value associated with the given key, or INT_MAX if key not found
  */
-int del(ts_hashmap_t *map, int key) {
+int del(ts_hashmap_t *map, int key)
+{
   // TODO
   return INT_MAX;
 }
 
-
 /**
  * @return the load factor of the given map
  */
-double lf(ts_hashmap_t *map) {
-  return (double) map->size / map->capacity;
+double lf(ts_hashmap_t *map)
+{
+  return (double)map->size / map->capacity;
 }
 
 /**
  * Prints the contents of the map
  */
-void printmap(ts_hashmap_t *map) {
-  for (int i = 0; i < map->capacity; i++) {
+void printmap(ts_hashmap_t *map)
+{
+  for (int i = 0; i < map->capacity; i++)
+  {
     printf("[%d] -> ", i);
     ts_entry_t *entry = map->table[i];
-    while (entry != NULL) {
+    while (entry != NULL)
+    {
       printf("(%d,%d)", entry->key, entry->value);
       if (entry->next != NULL)
         printf(" -> ");
