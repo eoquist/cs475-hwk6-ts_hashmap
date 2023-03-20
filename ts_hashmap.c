@@ -68,6 +68,10 @@ int get(ts_hashmap_t *hashmap, int key)
 int put(ts_hashmap_t *hashmap, int key, int value)
 {
   // TODO
+  
+  // if get key matches INT_MAX then make a new entry
+  // else just update entry
+
   return INT_MAX;
 }
 
