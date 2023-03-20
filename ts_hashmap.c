@@ -1,3 +1,14 @@
+/*
+ * File: ts_hashmap.c
+ * Author: Emilee Oquist
+ * Version: 1.0
+ * License: MIT
+ *
+ * Description: Implements a simplified version of a classic dynamically 
+ * allocated hashmap in C that introduces the concept of mutex locks and
+ * how they're used to make thread-safe structures.
+ */
+
 #include <limits.h>
 #include <pthread.h>
 #include <stdlib.h>

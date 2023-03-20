@@ -1,3 +1,12 @@
+/*
+ * File: main.c
+ * Author: Emilee Oquist
+ * Version: 1.0
+ * License: MIT
+ *
+ * Description: Tests the thread-safe hashmap 'ts_hashmap.c' file
+ */
+
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
