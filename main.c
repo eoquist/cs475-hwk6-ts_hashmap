@@ -25,6 +25,10 @@ int main(int argc, char *argv[])
 		printf("All other arguments for %s will be lost.\n", argv[0]);
 	}
 
+	if( argv[1] >= 0 ){
+		printf("You must have give the hashmap a capacity larger than 0")
+	}
+
 	srand(time(NULL));
 	int num_threads = atoi(argv[1]);
 	int capacity = (unsigned int)atoi(argv[2]);
