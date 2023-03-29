@@ -84,10 +84,8 @@ int put(ts_hashmap_t *hashmap, int key, int value)
   }
 
   // doesn't exist
-  // make new entry at idx size
   // update pointer
   // update size
-
   // if adding exceeds capacity ? allow it?
   ts_entry_t *new_entry = malloc(sizeof(ts_entry_t));
   new_entry->key = key;
@@ -109,8 +107,24 @@ int put(ts_hashmap_t *hashmap, int key, int value)
  */
 int del(ts_hashmap_t *hashmap, int key)
 {
-  // TODO
+  int hash = hash(key) % hashmap->capacity;
 
+  pthread_mutex_lock(&hashmap->mutex);
+  ts_entry_t *entry = hashmap->table[hash];
+
+  while (entry != NULL)
+  {
+    // fix pls
+    if (entry->key == key){
+      int old_value = entry->value;
+      entry->value = value;
+      pthread_mutex_unlock(&hashmap->mutex);
+      return old_value;
+    }
+    entry = entry->next;
+  }
+
+  pthread_mutex_unlock(&hashmap->mutex);
   return INT_MAX;
 }
 
@@ -122,15 +136,15 @@ double lf(ts_hashmap_t *hashmap)
   return (double)hashmap->size / (double)hashmap->capacity;
 }
 
-/**
- * Hashing function
- */
-int hash(int key)
-{
-  int hash = INT_MAX;
+// /**
+//  * Hashing function
+//  */
+// int hash(int key)
+// {
+//   int hash = INT_MAX;
 
-  return hash;
-}
+//   return hash;
+// }
 
 /**
  * Prints the contents of the hashmap
