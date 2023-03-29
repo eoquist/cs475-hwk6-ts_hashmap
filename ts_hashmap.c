@@ -80,23 +80,21 @@ int put(ts_hashmap_t *hashmap, int key, int value)
   { // doesn't exist
     // make new entry at idx size
     // update pointer
-
     // update size
-    
+
+    // if adding exceeds capacity ? allow it?
+    hashmap->capacity++;
+    hashmap->size++;
   }
   else
   {
     ts_entry_t *entry = hashmap->table[hash];
     entry->value = value;
     entry = entry->next; // ?
-    
+
     // find where key is
     // update value
   }
-
-  // if adding exceeds capacity ? allow it?
-  hashmap->capacity++;
-  hashmap->size++;
 
   return get_return_value;
 }
@@ -120,6 +118,15 @@ int del(ts_hashmap_t *hashmap, int key)
 double lf(ts_hashmap_t *hashmap)
 {
   return (double)hashmap->size / (double)hashmap->capacity;
+}
+
+/**
+ * Hashing function
+*/
+int hash(int key){
+  hash = INT_MAX;
+
+  return hash;
 }
 
 /**
