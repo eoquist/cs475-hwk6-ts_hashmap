@@ -39,6 +39,16 @@ int main(int argc, char *argv[])
 	// (1) cast it into an unsigned int, then
 	// (2) modulo by the size of the array. That should tell you which array position to hone in on.
 	// Because the array element points to the head of the entry list (or NULL), you can then walk the list of entries to search for a key.
+	
+	
+	
+	// create any number of threads, and each thread continuously puts/gets/dels 1000s of keys into the same shared hashmap. 
+	// Use the printmap() function that I provided to print out the contents of the map after the threads join back up.
+
+    // You may want to figure out how to “control” the randomness your tests so that you can repeat the same test on a 
+	// single-threaded version vs. a multi-threaded version and produce the same output. 
+
+
 
 	return 0;
 }
