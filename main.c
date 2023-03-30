@@ -17,24 +17,26 @@ int main(int argc, char *argv[])
 	if (argc < 3)
 	{
 		printf("Usage: %s <num threads> <hashmap capacity>\n", argv[0]);
-		return 1;
+		return 1; // !!!
 	}
 	else if (argc > 3)
 	{
 		printf("Arguments for %s that will be used are: <num threads %s > <hashmap capacity %s >\n", argv[0], argv[1], argv[2]);
 		printf("All other arguments for %s will be lost.\n", argv[0]);
+		// !!!
 	}
 
 	if( argv[1] >= 0 ){
 		printf("You must have give the hashmap a capacity larger than 0");
+		// !!!
 	}
 
+	// Write your test
 	srand(time(NULL));
 	int num_threads = atoi(argv[1]);
 	int capacity = (unsigned int)atoi(argv[2]);
-
-	// TODO: Write your test
 	ts_hashmap_t *ts_hashmap = initmap(capacity);
+
 	// Index Calculation In the example above, to calculate the array index, you take the key of the entry and
 	// (1) cast it into an unsigned int, then
 	// (2) modulo by the size of the array. That should tell you which array position to hone in on.

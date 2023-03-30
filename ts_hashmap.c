@@ -9,6 +9,17 @@
  * how they're used to make thread-safe structures.
  */
 
+// initialize the lock
+// pthread_mutex_t *lock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
+// pthread_mutex_init(lock, NULL);
+// pthread_mutex_lock(&hashmap->lock);
+
+// done with lock; deallocate
+// pthread_mutex_destroy(lock);
+// free(lock);
+// lock = NULL;
+// pthread_mutex_unlock(&hashmap->lock);
+
 #include <limits.h>
 #include <pthread.h>
 #include <stdlib.h>
@@ -18,7 +29,6 @@
 
 /**
  * Creates a new thread-safe hashmap.
- *
  * @param capacity initial capacity of the hashmap.
  * @return a pointer to a new thread-safe hashmap.
  */
@@ -46,17 +56,10 @@ ts_hashmap_t *initmap(int capacity)
  */
 int get(ts_hashmap_t *hashmap, int key)
 {
-  // initialize the lock
-  pthread_mutex_t *lock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
-  pthread_mutex_init(lock, NULL);
-
-  // done with lock; deallocate
-  pthread_mutex_destroy(lock);
-  free(lock);
-  lock = NULL;
   int value = INT_MAX;
   for (int i = 0; i < hashmap->capacity; i++)
   {
+    pthread_mutex_lock(&hashmap->lock);
     ts_entry_t *entry = hashmap->table[i];
     while (entry != NULL)
     {
@@ -65,6 +68,7 @@ int get(ts_hashmap_t *hashmap, int key)
         value = entry->value;
       }
     }
+    pthread_mutex_unlock(&hashmap->lock);
   }
   return value;
 }
@@ -78,13 +82,8 @@ int get(ts_hashmap_t *hashmap, int key)
  */
 int put(ts_hashmap_t *hashmap, int key, int value)
 {
-  // any issues if you try to put(hashmap, INT_MAX, value) ?
   int hash = key % hashmap->capacity;
-
-  // initialize the lock
-  pthread_mutex_t *lock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
-  pthread_mutex_init(lock, NULL);
-
+  pthread_mutex_lock(&hashmap->lock);
   ts_entry_t *entry = hashmap->table[hash];
 
   while (entry != NULL)
@@ -94,29 +93,19 @@ int put(ts_hashmap_t *hashmap, int key, int value)
       int old_value = entry->value;
       entry->value = value;
 
-      // done with lock; deallocate
-      pthread_mutex_destroy(lock);
-      free(lock);
-      lock = NULL;
+      pthread_mutex_unlock(&hashmap->lock);
       return old_value;
     }
     entry = entry->next;
   }
 
-  // doesn't exist
-  // if adding exceeds capacity ? allow it?
   ts_entry_t *new_entry = malloc(sizeof(ts_entry_t));
   new_entry->key = key;
   new_entry->value = value;
-  new_entry->next = hashmap->table[hash];
-  hashmap->table[hash] = new_entry;
+  new_entry->next = entry;
+  
   hashmap->size++;
-
-  // done with lock; deallocate
-  pthread_mutex_destroy(lock);
-  free(lock);
-  lock = NULL;
-
+  pthread_mutex_unlock(&hashmap->lock);
   return INT_MAX;
 }
 
@@ -129,34 +118,26 @@ int put(ts_hashmap_t *hashmap, int key, int value)
 int del(ts_hashmap_t *hashmap, int key)
 {
   int hash = key % hashmap->capacity;
-
-  // initialize the lock
-  pthread_mutex_t *lock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
-  pthread_mutex_init(lock, NULL);
-
+  int old_value = INT_MAX;
+  pthread_mutex_lock(&hashmap->lock);
   ts_entry_t *entry = hashmap->table[hash];
 
   while (entry != NULL)
   {
-    // fix pls
-    if (entry->key == key)
+    if(entry->value == key)
     {
-      int old_value = entry->value;
-
-      // done with lock; deallocate
-      pthread_mutex_destroy(lock);
-      free(lock);
-      lock = NULL;
+      entry->next = NULL;
+    }
+    if(entry->key == key){
+      old_value = entry->value;
+      entry = NULL;
+      pthread_mutex_unlock(&hashmap->lock);
       return old_value;
     }
-    entry = entry->next;
   }
 
-  // done with lock; deallocate
-  pthread_mutex_destroy(lock);
-  free(lock);
-  lock = NULL;
-  return INT_MAX;
+  pthread_mutex_unlock(&hashmap->lock);
+  return old_value;
 }
 
 /**

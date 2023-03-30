@@ -6,7 +6,9 @@ typedef struct ts_entry_t {
    int key;
    int value;
    struct ts_entry_t *next;
+   pthread_mutex_t lock;
 } ts_entry_t;
+
 /**
  * To support arbitrary key and value types, you can use a combination 
  * of void pointers and function pointers to handle the different types 
@@ -19,6 +21,7 @@ typedef struct ts_hashmap_t {
    ts_entry_t **table;
    int capacity;
    int size;
+   pthread_mutex_t lock;
 } ts_hashmap_t;
 
 // function declarations
