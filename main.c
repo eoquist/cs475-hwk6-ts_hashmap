@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 	}
 
 	if( argv[1] >= 0 ){
-		printf("You must have give the hashmap a capacity larger than 0")
+		printf("You must have give the hashmap a capacity larger than 0");
 	}
 
 	srand(time(NULL));
