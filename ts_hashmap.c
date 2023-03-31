@@ -44,9 +44,6 @@ ts_hashmap_t *initmap(int capacity)
   return hashmap;
 }
 
-// pthread_mutex_t
-// pthread_mutex_init(..) to initialize it. O
-// pthread_mutex_lock(..) and pthread_mutex_unlock(..).
 
 /**
  * Obtains the value associated with the given key.
@@ -72,6 +69,7 @@ int get(ts_hashmap_t *hashmap, int key)
   }
   return value;
 }
+
 
 /**
  * Associates a value associated with a given key.
@@ -103,14 +101,15 @@ int put(ts_hashmap_t *hashmap, int key, int value)
   new_entry->key = key;
   new_entry->value = value;
   new_entry->next = entry;
-  
+
   hashmap->size++;
   pthread_mutex_unlock(&hashmap->lock);
   return INT_MAX;
 }
 
+
 /**
- * Removes an entry in the hashmap
+ * Removes an entry in the hashmap.
  * @param hashmap a pointer to the hashmap
  * @param key a key to search
  * @return the value associated with the given key, or INT_MAX if key not found
@@ -120,33 +119,42 @@ int del(ts_hashmap_t *hashmap, int key)
   int hash = key % hashmap->capacity;
   int old_value = INT_MAX;
   pthread_mutex_lock(&hashmap->lock);
+  ts_entry_t *previous_entry = NULL;
   ts_entry_t *entry = hashmap->table[hash];
 
   while (entry != NULL)
   {
-    if(entry->value == key)
+    if (entry->key == key) // entry we want to get rid of
     {
-      entry->next = NULL;
-    }
-    if(entry->key == key){
       old_value = entry->value;
-      entry = NULL;
+      if (previous_entry == NULL) { // entry is head
+        hashmap->table[hash] = entry->next;
+      }
+      else{ 
+        previous_entry->next = entry->next; // connect the prev and next
+      }
+      hashmap->size--;
       pthread_mutex_unlock(&hashmap->lock);
       return old_value;
     }
+    previous_entry = entry;
+    entry = entry->next;
   }
 
   pthread_mutex_unlock(&hashmap->lock);
   return old_value;
 }
 
+
 /**
  * @return the load factor of the given hashmap
  */
 double lf(ts_hashmap_t *hashmap)
 {
+  
   return (double)hashmap->size / (double)hashmap->capacity;
 }
+
 
 /**
  * Prints the contents of the hashmap
