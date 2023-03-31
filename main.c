@@ -27,10 +27,7 @@ int main(int argc, char *argv[])
 		int key = rand() % capacity;
 		int value = rand();
 		thread_args args = {ts_hashmap, key, value};
-		pthread_create(&threads[i], NULL, put(ts_hashmap,key,value), NULL);
-		// pthread_create(&threads[i], NULL, get, &args);
-		// pthread_create(&threads[i], NULL, del, &args);
-		// pthread_create(&threads[i], NULL, lf, &args);
+		//sad
 	}
 	// wait for threads to finish
 	for (int i = 0; i < num_threads; i++)
